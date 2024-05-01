@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Auraly</string>
+    <string name="genre">Genre</string>
+    <string name="sampleLyrics">Sample Lyrics</string>
+    <string name="sampleLyricsSupportText">any lyrics you think I should add</string>
+    <string name="genreSupportText">Choose your genre here</string>
+    <string name="generate">Generate</string>
+
+</resources>
