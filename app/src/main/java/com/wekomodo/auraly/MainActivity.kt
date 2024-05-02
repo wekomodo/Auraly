@@ -24,18 +24,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   // val key = BuildConfig.apiKey
-                  /*  val generativeModel = GenerativeModel(
-                        // Use a model that's applicable for your use case (see "Implement basic use cases" below)
-                        modelName = "gemini-pro",
-                        // Access your API key as a Build Configuration variable (see "Set up your API key" above)
-                        apiKey = BuildConfig.apiKey
-                    )
-                    val prompt = "Write a story about a magic backpack."
-                    LaunchedEffect(Unit) {
-                        val response = generativeModel.generateContent(prompt)
-                        print(response.text)
-                    }*/
                     HomeScreen()
                 }
             }

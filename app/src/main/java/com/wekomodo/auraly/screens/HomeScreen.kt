@@ -9,10 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -70,6 +74,8 @@ fun HomeScreen() {
     var genre by remember { mutableStateOf("") }
     var time by remember { mutableStateOf("") }
     var mood by remember { mutableStateOf("") }
+    var loading by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -97,26 +103,55 @@ fun HomeScreen() {
                 .height(100.dp)
         )
         Button(onClick = {
+            loading = true
             val generativeModel = GenerativeModel(
                 // Use a model that's applicable for your use case (see "Implement basic use cases" below)
                 modelName = "gemini-pro",
                 // Access your API key as a Build Configuration variable (see "Set up your API key" above)
                 apiKey = BuildConfig.apiKey
             )
-            val prompt = "Write a song with these parameters: mood($mood),time($time),genre($genre),sample lyrics($sample_lyrics)"
+            val prompt =
+                "Write a song with these parameters: mood($mood),time($time),genre($genre),sample lyrics($sample_lyrics)"
             CoroutineScope(Dispatchers.IO).launch {
-                result = generativeModel.generateContent(prompt).text.toString()
-                Log.d("result",result)
+                val response = generativeModel.generateContent(prompt)
+                response.text?.let {
+                    result = it
+                }
+                Log.d("result", result)
+                loading = false
             }
         }) {
             Text(text = stringResource(id = R.string.generate))
         }
 
         Box(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
-        ){
-            val scroll = rememberScrollState(0)
-            Text(text = "output: $result",modifier= Modifier.fillMaxSize().verticalScroll(scroll))
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = "Output")
+                    val scroll = rememberScrollState(0)
+                    Text(
+                        text = result, modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scroll)
+                    )
+                }
+
+            }
+            if (loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(64.dp),
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            }
         }
     }
 }
